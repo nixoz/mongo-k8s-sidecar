@@ -1,3 +1,4 @@
+
 NUM_REPLICAS=$(shell kubectl get rc -l role=mongo -o template --template='{{ len .items }}')
 NEW_REPLICA_NUM=$(shell expr $(NUM_REPLICAS) + 1 )
 CREATE_SERVICE=TRUE
