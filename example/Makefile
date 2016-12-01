@@ -10,16 +10,16 @@ CREATE_SERVICE=TRUE
 ENV=GoogleCloudPlatform
 
 # Default volume size on creation
-DISK_SIZE=100GB
+DISK_SIZE=32GB
 
 # GoogleCloudPlatform Specific Environment Variables
-ZONE=us-central1-f
+ZONE=europe-west1-c
 
 # FLOCKERAWS Specific Environment Variables
 CONTROL_DNS=<FLOCKER CONTROL DNS>
 INITIAL_NODE_ID=<A FLOCKER NODE ID TO SEED A VOLUME>
 VOLUME_PREFIX=<any name to prefix your volumes with>
-KUBECONFIG=clusters/<K8s Cluster Name>/kubeconfig
+KUBECONFIG=clusters/larom-cluster/kubeconfig
 
 
 count:
@@ -31,7 +31,7 @@ endif
 add-replica:
 ifeq ($(ENV),GoogleCloudPlatform)
 	@echo 'Creating Disk'
-	-gcloud compute disks create mongo-persistent-storage-node-$(NEW_REPLICA_NUM)-disk --size $(DISK_SIZE) --zone $(ZONE)
+	-gcloud compute disks create mongo-persistent-storage-node-$(NEW_REPLICA_NUM)--disk --size $(DISK_SIZE) --zone $(ZONE)
 
 	@echo 'Adding Replica'
 	-sed -e 's~<num>~$(NEW_REPLICA_NUM)~g' mongo-controller-template.yaml | kubectl create -f -
@@ -62,9 +62,9 @@ ifeq ($(ENV),GoogleCloudPlatform)
 	@echo 'Deleting Replic'
 	-kubectl delete rc mongo-$(NUM_REPLICAS)
 
-	@echo 'Deleting Disk'
-	sleep 60
-	-yes | gcloud compute disks delete mongo-persistent-storage-node-$(NUM_REPLICAS)-disk --zone $(ZONE)
+	#@echo 'Deleting Disk'
+	#sleep 60
+	#-yes | gcloud compute disks delete mongo-persistent-storage-node-$(NUM_REPLICAS)--disk --zone $(ZONE)
 endif
 ifeq ($(ENV),AWS)
 	@echo 'AWS not supported yet'

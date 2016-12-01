@@ -36,6 +36,9 @@ spec:
           volumeMounts:
             - name: mongo-persistent-storage
               mountPath: /data/db
+            #- name: mongo-backup-second
+            #  mountPath: /data/backup-second
+            
         - name: mongo-sidecar
           image: leportlabs/mongo-k8s-sidecar
           env:
@@ -44,8 +47,12 @@ spec:
       volumes:
         - name: mongo-persistent-storage
           gcePersistentDisk:
-            pdName: mongo-persistent-storage-node-<num>-disk
+            pdName: mongo-persistent-storage-node-<num>--disk
             fsType: ext4
+        #- name: mongo-backup-second
+        #  gcePersistentDisk:
+        #    pdName: mongo-backup-storage-disk
+        #    fsType: ext4
     metadata:
       labels:
         name: mongo-node-<num>
